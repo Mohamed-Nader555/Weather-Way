@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/daily_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/background_color">
+
+
+    <TextView
+        android:id="@+id/daily_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/small_margin"
+        android:padding="@dimen/_7sdp"
+        android:text="Sun"
+        android:textColor="?attr/text_color"
+        android:textSize="@dimen/small_text"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/temp_degree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/daily_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="30"
+                android:textColor="?attr/text_color"
+                android:textSize="@dimen/mid_text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/daily_deg_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_toEndOf="@id/daily_temp"
+                android:gravity="center"
+                android:text="@string/degree_symbol"
+                android:textColor="?attr/text_color"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/daily_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_item_drawable_padding"
+            android:text="Clear Sky"
+            android:textColor="?attr/text_color"
+            android:textSize="@dimen/small_text" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/daily_image"
+        android:layout_width="@dimen/small_icons"
+        android:layout_height="@dimen/small_icons"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/big_margin"
+        android:src="@drawable/sun" />
+
+</RelativeLayout>
+

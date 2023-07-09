@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Weather Way</string>
+    <string name="degree_symbol">°</string>
+    <string name="percentage_symbol">%</string>
+    <string name="this_week_weather">This is the Week Weather</string>
+    <string name="this_weather_week_hint">You Can Press on any day to see all Weather Conditions</string>
+</resources>
