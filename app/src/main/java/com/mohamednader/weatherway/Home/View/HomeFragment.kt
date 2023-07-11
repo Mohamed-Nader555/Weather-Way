@@ -11,10 +11,12 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +28,7 @@ import com.mohamednader.weatherway.Home.View.Adapters.OnDayClickListener
 import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialog
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModel
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModelFactory
+import com.mohamednader.weatherway.MainHome.FabClickListener
 import com.mohamednader.weatherway.Model.Pojo.Daily
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
@@ -33,16 +36,16 @@ import com.mohamednader.weatherway.Network.ApiState
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
 import com.mohamednader.weatherway.Utilities.CustomProgress
 import com.mohamednader.weatherway.Utilities.getWeatherImageDrawable
-import com.mohamednader.weatherway.databinding.ActivityHomeBinding
+import com.mohamednader.weatherway.databinding.HomeFragmentBinding
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class Home : AppCompatActivity(), OnDayClickListener {
+class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
 
     private val TAG = "Home_INFO_TAG"
-    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: HomeFragmentBinding
 
     //View Model Members
     private lateinit var homeViewModel: HomeViewModel
@@ -66,21 +69,32 @@ class Home : AppCompatActivity(), OnDayClickListener {
     //Needed Variables
     lateinit var locationAddress: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        binding = HomeFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initViews()
         requestWeatherData()
         getLastLocation()
+
     }
 
     private fun initViews() {
 
         //ViewModel
         homeFactory = HomeViewModelFactory(
-            Repository.getInstance(ApiClient.getInstance(), ConcreteSharedPrefsSource(this))
+            Repository.getInstance(
+                ApiClient.getInstance(),
+                ConcreteSharedPrefsSource(requireContext())
+            )
         )
         homeViewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
 
@@ -88,14 +102,16 @@ class Home : AppCompatActivity(), OnDayClickListener {
         customProgress = CustomProgress.getInstance()
 
         //Location
-        geocoder = Geocoder(this, Locale.getDefault())
-        fusedClient = LocationServices.getFusedLocationProviderClient(this)
+        geocoder = Geocoder(requireContext(), Locale.getDefault())
+        fusedClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         //RecyclerViews Components
-        hourlyLinearLayoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        dailyLinearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        hourlyAdapter = HourlyAdapter(this)
-        dailyAdapter = DailyAdapter(this, this)
+        hourlyLinearLayoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        dailyLinearLayoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        hourlyAdapter = HourlyAdapter(requireContext())
+        dailyAdapter = DailyAdapter(requireContext(), this)
 
         binding.hourlyRecyclerView.apply {
             adapter = hourlyAdapter
@@ -146,11 +162,12 @@ class Home : AppCompatActivity(), OnDayClickListener {
                     }
                     is ApiState.Loading -> {
                         Log.i(TAG, "onCreate: Loading...")
-                        customProgress.showDialog(this@Home, "Loading..", false)
+                        customProgress.showDialog(requireContext(), "Loading..", false)
                     }
                     is ApiState.Failure -> {
                         //hideViews()
-                        Toast.makeText(this@Home, "There Was An Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "There Was An Error", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
@@ -159,7 +176,7 @@ class Home : AppCompatActivity(), OnDayClickListener {
 
     override fun onDayClickListener(dailyItem: Daily) {
         val dailyResultDialog = DailyResultDialog(dailyItem, locationAddress)
-        dailyResultDialog.show(this@Home.supportFragmentManager, "DailyResultDialog")
+        dailyResultDialog.show(requireActivity().supportFragmentManager, "DailyResultDialog")
     }
 
 
@@ -169,7 +186,7 @@ class Home : AppCompatActivity(), OnDayClickListener {
             if (isLocationEnabled()) {
                 requestNewLocationData()
             } else {
-                Toast.makeText(this, "Turn On Location", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Turn On Location", Toast.LENGTH_LONG).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }
@@ -180,9 +197,9 @@ class Home : AppCompatActivity(), OnDayClickListener {
 
     private fun checkPermissions(): Boolean {
         val result = ActivityCompat.checkSelfPermission(
-            this, android.Manifest.permission.ACCESS_COARSE_LOCATION
+            requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-            this, android.Manifest.permission.ACCESS_FINE_LOCATION
+            requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
         return result
@@ -190,7 +207,7 @@ class Home : AppCompatActivity(), OnDayClickListener {
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
@@ -199,7 +216,7 @@ class Home : AppCompatActivity(), OnDayClickListener {
     //button to open google maps and pin the long and lat
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
-            this, arrayOf(
+            requireActivity(), arrayOf(
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION
             ), REQUEST_LOCATION_PERMISSION_ID
@@ -231,7 +248,7 @@ class Home : AppCompatActivity(), OnDayClickListener {
                 getLastLocation()
             } else {
                 Toast.makeText(
-                    this,
+                    requireContext(),
                     "Location permission denied. Unable to retrieve location.",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -253,7 +270,8 @@ class Home : AppCompatActivity(), OnDayClickListener {
             locationAddress = "$country, $adminArea"
             binding.weatherAddress.text = "$country, $adminArea"
         } else {
-            Toast.makeText(this, "Unable to retrieve address.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Unable to retrieve address.", Toast.LENGTH_SHORT)
+                .show()
         }
 
     }
@@ -281,6 +299,10 @@ class Home : AppCompatActivity(), OnDayClickListener {
         binding.hourlyRecyclerView.visibility = View.VISIBLE
         binding.dailyHintCardView.visibility = View.VISIBLE
         binding.dailyRecyclerView.visibility = View.VISIBLE
+    }
+
+    override fun onFabClick() {
+        Toast.makeText(requireContext(), "This is From HomeFragment", Toast.LENGTH_LONG).show()
     }
 
 }

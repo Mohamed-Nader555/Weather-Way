@@ -7,20 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.mohamednader.weatherway.ConfigSetup.View.ConfigSetupDialog
-import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialog
-import com.mohamednader.weatherway.Home.View.Home
-import com.mohamednader.weatherway.Home.ViewModel.HomeViewModel
-import com.mohamednader.weatherway.Home.ViewModel.HomeViewModelFactory
+import com.mohamednader.weatherway.Home.View.HomeFragment
+import com.mohamednader.weatherway.MainHome.MainHome
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.R
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
 import com.mohamednader.weatherway.Splash.ViewModel.SplashViewModel
 import com.mohamednader.weatherway.Splash.ViewModel.SplashViewModelFactory
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class Splash : AppCompatActivity() {
 
@@ -75,7 +70,7 @@ class Splash : AppCompatActivity() {
     }
 
     private fun goToHomeScreen(){
-        val intent = Intent(this@Splash, Home::class.java)
+        val intent = Intent(this@Splash, MainHome::class.java)
         startActivity(intent)
         finish()
     }

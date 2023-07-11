@@ -7,5 +7,7 @@
     <string name="location_permission_hint">We cannot find your Location!</string>
     <string name="location_permission_instruction">Please allow Weather Way to access your Location</string>
     <string name="loading_dialog_text">Loading...</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

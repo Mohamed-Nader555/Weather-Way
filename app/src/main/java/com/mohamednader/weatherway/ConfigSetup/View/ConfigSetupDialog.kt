@@ -10,7 +10,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.mohamednader.weatherway.ConfigSetup.ViewModel.ConfigSetupViewModel
 import com.mohamednader.weatherway.ConfigSetup.ViewModel.ConfigSetupViewModelFactory
-import com.mohamednader.weatherway.Home.View.Home
+import com.mohamednader.weatherway.Home.View.HomeFragment
+import com.mohamednader.weatherway.MainHome.MainHome
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
@@ -96,7 +97,7 @@ class ConfigSetupDialog : DialogFragment() {
     }
 
     private fun goToHomeScreen() {
-        val intent = Intent(requireContext(), Home::class.java)
+        val intent = Intent(requireContext(), MainHome::class.java)
         startActivity(intent)
         activity?.finish()
     }
