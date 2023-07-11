@@ -40,7 +40,7 @@ class DailyAdapter(private val context: Context, private val listener: OnDayClic
 
         //set click listener on the view
         holder.binding.root.setOnClickListener {
-            listener.onDayClickListener()
+            listener.onDayClickListener(daily)
         }
     }
 

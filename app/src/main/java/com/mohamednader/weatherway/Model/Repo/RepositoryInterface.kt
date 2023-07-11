@@ -1,6 +1,7 @@
 package com.mohamednader.weatherway.Model.Repo
 
 import com.mohamednader.weatherway.Network.RemoteSource
+import com.mohamednader.weatherway.SharedPreferences.SharedPrefsSource
 
-interface RepositoryInterface : RemoteSource {
+interface RepositoryInterface : RemoteSource /*, LocalSource */, SharedPrefsSource {
 }

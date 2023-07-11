@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="@dimen/big_margin"
+    app:cardCornerRadius="@dimen/big_margin"
+    app:cardElevation="@dimen/small_margin">
+
+    <RelativeLayout
+        android:layout_width="@dimen/_270sdp"
+        android:layout_height="wrap_content"
+        android:background="?attr/background_color">
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/big_margin"
+            android:layout_marginTop="@dimen/big_margin"
+            android:layout_marginEnd="@dimen/big_margin"
+            android:gravity="center"
+            android:text="Configrations Setup"
+            android:textColor="@color/main_color"
+            android:textSize="@dimen/mid_text"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/location_options_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dialog_title"
+            android:orientation="vertical"
+            android:padding="@dimen/tiny_margin">
+
+            <TextView
+                android:id="@+id/text_location_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/small_margin"
+                android:gravity="center"
+                android:text="Location: "
+                android:textAllCaps="true"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dialog_title"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RadioButton
+                    android:id="@+id/radio_gps_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/small_margin"
+                    android:layout_weight="1"
+                    android:text="GPS" />
+
+                <RadioButton
+                    android:id="@+id/radio_map_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/small_margin"
+                    android:layout_weight="1"
+                    android:text="Map" />
+            </RadioGroup>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/notifications_options_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_options_container"
+            android:orientation="vertical"
+            android:padding="@dimen/tiny_margin">
+
+            <TextView
+                android:id="@+id/text_notification_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Notification: "
+                android:textAllCaps="true"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/config_notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/small_margin" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/config_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/notifications_options_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:text="Save"
+            android:textColor="@color/whitey" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
