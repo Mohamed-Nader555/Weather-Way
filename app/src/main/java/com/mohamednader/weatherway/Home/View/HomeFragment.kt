@@ -22,30 +22,31 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.*
+import com.mohamednader.weatherway.Database.ConcreteLocalSource
 import com.mohamednader.weatherway.Home.View.Adapters.DailyAdapter
 import com.mohamednader.weatherway.Home.View.Adapters.HourlyAdapter
 import com.mohamednader.weatherway.Home.View.Adapters.OnDayClickListener
-import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialog
+import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialogFragment
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModel
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModelFactory
-import com.mohamednader.weatherway.MainHome.FabClickListener
+import com.mohamednader.weatherway.MainHome.View.FabClickListener
 import com.mohamednader.weatherway.Model.Pojo.Daily
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.Network.ApiState
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
-import com.mohamednader.weatherway.Utilities.CustomProgress
-import com.mohamednader.weatherway.Utilities.getWeatherImageDrawable
-import com.mohamednader.weatherway.databinding.HomeFragmentBinding
+import com.mohamednader.weatherway.Utilities.*
+import com.mohamednader.weatherway.databinding.FragmentHomeBinding
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
 class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
 
-    private val TAG = "Home_INFO_TAG"
-    private lateinit var binding: HomeFragmentBinding
+    private val TAG = "HomeFragment_INFO_TAG"
+    private lateinit var binding: FragmentHomeBinding
 
     //View Model Members
     private lateinit var homeViewModel: HomeViewModel
@@ -69,11 +70,16 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
     //Needed Variables
     lateinit var locationAddress: String
 
+    //API Variables
+    private lateinit var languageValue: String
+    private lateinit var tempUnitValue: String
+    private lateinit var windUnitValue: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = HomeFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -82,9 +88,7 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        requestWeatherData()
-        getLastLocation()
-
+        getSharedPrefsData()
     }
 
     private fun initViews() {
@@ -93,6 +97,7 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
         homeFactory = HomeViewModelFactory(
             Repository.getInstance(
                 ApiClient.getInstance(),
+                ConcreteLocalSource(requireContext()),
                 ConcreteSharedPrefsSource(requireContext())
             )
         )
@@ -125,21 +130,129 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
 
         //Click Listeners
         binding.locationPermissionRequestBtn.setOnClickListener {
-            requestPermissions()
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ), REQUEST_LOCATION_PERMISSION_ID
+            )
         }
     }
 
-    private fun requestWeatherData() {
+    private fun getSharedPrefsData() {
+
         lifecycleScope.launchWhenStarted {
+
+            launch {
+                homeViewModel.language.collect { result ->
+                    Log.i(TAG, "initViews: $result")
+                    when (result) {
+                        Constants.language_arabic -> languageValue = result
+                        Constants.language_english -> languageValue = result
+                    }
+                    Constants.languageValueForAll = languageValue
+                }
+            }
+
+            launch {
+                homeViewModel.tempUnit.collect { result ->
+                    when (result) {
+                        Constants.tempUnit_celsius -> tempUnitValue = Constants.metric
+                        Constants.tempUnit_kelvin -> tempUnitValue = Constants.standard
+                        Constants.tempUnit_fahrenheit -> tempUnitValue = Constants.imperial
+                    }
+                }
+            }
+
+
+            launch {
+                homeViewModel.windUnit.collect { result ->
+                    when (result) {
+                        Constants.windUnit_meter_per_second -> windUnitValue = result
+                        Constants.windUnit_mile_per_hour -> windUnitValue = result
+                    }
+                }
+            }
+
+            getLastLocation()
+            requestWeatherData()
+
+        }
+
+    }
+
+    private fun requestWeatherData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             homeViewModel.weatherData.collect { result ->
                 when (result) {
                     is ApiState.Success -> {
                         val weather = result.data
                         val img = weather.current.weather[0].icon
                         val des = weather.current.weather[0].description
-                        val temp = weather.current.temp.toFloat().roundToInt().toString()
+                        val wind = weather.current.windSpeed.toDouble()
+                        lateinit var tempUnit: String
+                        lateinit var windUnitText: String
+                        when (languageValue) {
+                            Constants.language_arabic -> {
+                                tempUnit = when (tempUnitValue) {
+                                    Constants.standard -> "ك"
+                                    Constants.metric -> "س"
+                                    Constants.imperial -> "ف"
+                                    else -> "س"
+                                }
+                            }
+                            Constants.language_english -> {
+                                tempUnit = when (tempUnitValue) {
+                                    Constants.standard -> "k"
+                                    Constants.metric -> "c"
+                                    Constants.imperial -> "f"
+                                    else -> "c"
+                                }
+                            }
+                        }
+                        //Log.i(TAG, "requestWeatherData-Alert: ${(weather.alerts?.get(0)?.tags?.get(0))?:"There is no alerts"}")
+
+                        when (tempUnitValue) {
+                            Constants.standard -> {
+                                windUnitText = when (windUnitValue) {
+                                    Constants.windUnit_meter_per_second -> "${wind.roundToInt()}m/s"
+                                    Constants.windUnit_mile_per_hour -> "${
+                                        convertMeterPerSecToMilePerHour(
+                                            wind
+                                        ).roundToInt()
+                                    }m/h"
+                                    else -> ""
+                                }
+                            }
+                            Constants.metric -> {
+                                windUnitText = when (windUnitValue) {
+                                    Constants.windUnit_meter_per_second -> "${wind.roundToInt()}m/s"
+                                    Constants.windUnit_mile_per_hour -> "${
+                                        convertMeterPerSecToMilePerHour(
+                                            wind
+                                        ).roundToInt()
+                                    }m/h"
+                                    else -> ""
+                                }
+                            }
+                            Constants.imperial -> {
+                                windUnitText = when (windUnitValue) {
+                                    Constants.windUnit_meter_per_second -> "${
+                                        convertMilePerHourToMeterPerSec(
+                                            wind
+                                        ).roundToInt()
+                                    }m/s"
+                                    Constants.windUnit_mile_per_hour -> "${wind.roundToInt()}m/h"
+                                    else -> ""
+                                }
+                            }
+                        }
+                        Constants.tempUnitForAll = tempUnit
+                        Constants.tempUnitValueForAll = tempUnitValue
+                        Constants.windUnitValueForAll = windUnitValue
+                        val temp = "${weather.current.temp.toFloat().roundToInt()}$tempUnit"
                         val humidity = "${weather.current.humidity.toFloat().roundToInt()}%"
-                        val windSpeed = "${weather.current.windSpeed.toFloat().roundToInt()}%"
+                        val windSpeed = windUnitText
                         val clouds = "${weather.current.clouds.toFloat().roundToInt()}%"
                         val hourlyList = weather.hourly
                         val dailyList = weather.daily
@@ -162,7 +275,9 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                     }
                     is ApiState.Loading -> {
                         Log.i(TAG, "onCreate: Loading...")
-                        customProgress.showDialog(requireContext(), "Loading..", false)
+                        if (checkPermissions()) {
+                            customProgress.showDialog(requireContext(), "Loading..", false)
+                        }
                     }
                     is ApiState.Failure -> {
                         //hideViews()
@@ -175,7 +290,8 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
     }
 
     override fun onDayClickListener(dailyItem: Daily) {
-        val dailyResultDialog = DailyResultDialog(dailyItem, locationAddress)
+        Log.i(TAG, "onDayClickListener - The Address To Dialog: $locationAddress ")
+        val dailyResultDialog = DailyResultDialogFragment(dailyItem, locationAddress)
         dailyResultDialog.show(requireActivity().supportFragmentManager, "DailyResultDialog")
     }
 
@@ -191,7 +307,13 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                 startActivity(intent)
             }
         } else {
-            requestPermissions()
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ), REQUEST_LOCATION_PERMISSION_ID
+            )
+
         }
     }
 
@@ -213,30 +335,37 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
         )
     }
 
-    //button to open google maps and pin the long and lat
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            requireActivity(), arrayOf(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ), REQUEST_LOCATION_PERMISSION_ID
-        )
-    }
-
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
-        fusedClient.lastLocation.addOnSuccessListener {
-            val params: MutableMap<String, String> =
-                mutableMapOf("lat" to it.latitude.toString(), "lon" to it.longitude.toString())
-            params += mapOf(
-                "appid" to "3e6f518ff7d5d207d9c201f3c1ec34f6",
-                "units" to "metric",
-                "exclude" to "minutely"
-            )
-            homeViewModel.getWeatherDataFromNetwork(params)
-            getAddressFromLocation(it)
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000 // Update interval in milliseconds
+            fastestInterval = 5000 // Fastest update interval in milliseconds
         }
+
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult?.lastLocation?.let { location ->
+                    val params: MutableMap<String, String> = mutableMapOf(
+                        "lat" to location.latitude.toString(),
+                        "lon" to location.longitude.toString()
+                    )
+                    params += mapOf(
+                        "appid" to Constants.app_id,
+                        "units" to tempUnitValue,
+                        "lang" to languageValue,
+                        "exclude" to "minutely"
+                    )
+                    homeViewModel.getWeatherDataFromNetwork(params)
+                    getAddressFromLocation(location)
+                    fusedClient.removeLocationUpdates(this)
+                }
+            }
+        }
+
+        fusedClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
@@ -244,18 +373,23 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_LOCATION_PERMISSION_ID) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "onRequestPermissionsResult: Permission granted")
+                customProgress.showDialog(requireContext(), "Loading..", false)
                 showViewsLocationPermission()
                 getLastLocation()
             } else {
+                Log.i(TAG, "onRequestPermissionsResult: Permission denied")
                 Toast.makeText(
                     requireContext(),
                     "Location permission denied. Unable to retrieve location.",
                     Toast.LENGTH_SHORT
                 ).show()
                 hideViewsLocationPermission()
+
             }
         }
     }
+
 
     @SuppressLint("SetTextI18n")
     private fun getAddressFromLocation(location: Location) {

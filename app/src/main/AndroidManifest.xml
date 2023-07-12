@@ -17,7 +17,15 @@
         android:theme="@style/Theme.WeatherWay"
         tools:targetApi="31">
         <activity
-            android:name=".MainHome.MainHome"
+            android:name=".Favorite.FavoriteResult.View.FavoriteResultActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".MainHome.View.MainHome"
+            android:configChanges="locale"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -25,6 +33,7 @@
         </activity>
         <activity
             android:name=".Splash.View.Splash"
+            android:configChanges="locale"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,13 +45,17 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
-            android:name=".Home.View.HomeFragment"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".Maps.MapsActivity"
+            android:label="Map" />
     </application>
 
 </manifest>

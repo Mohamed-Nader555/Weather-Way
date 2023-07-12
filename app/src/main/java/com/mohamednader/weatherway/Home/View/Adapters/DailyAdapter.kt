@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamednader.weatherway.Model.Pojo.Daily
+import com.mohamednader.weatherway.Utilities.Constants
 import com.mohamednader.weatherway.Utilities.getWeatherImageDrawable
 import com.mohamednader.weatherway.databinding.ItemDailyBinding
 import java.text.SimpleDateFormat
@@ -29,13 +30,15 @@ class DailyAdapter(private val context: Context, private val listener: OnDayClic
 
         //prepare data to set on Views
         val img = daily.weather[0].icon
-        val temp = daily.temp.day.toFloat().roundToInt().toString()
+        val temp = "${daily.temp.day.toFloat().roundToInt()}${Constants.tempUnitForAll}"
+        val des = daily.weather[0].description
         val dateFormat = SimpleDateFormat("EEE", Locale.getDefault())
         val date = Date(daily.dt.toLong() * 1000)
 
         //set Data on Views
         holder.binding.dailyImage.setImageResource(getWeatherImageDrawable(img))
         holder.binding.dailyTemp.text = temp
+        holder.binding.dailyDes.text = des
         holder.binding.dailyDay.text = dateFormat.format(date)
 
         //set click listener on the view

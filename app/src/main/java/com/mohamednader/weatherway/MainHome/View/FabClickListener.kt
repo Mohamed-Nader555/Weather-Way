@@ -1,4 +1,4 @@
-package com.mohamednader.weatherway.MainHome
+package com.mohamednader.weatherway.MainHome.View
 
 interface FabClickListener {
     fun onFabClick()

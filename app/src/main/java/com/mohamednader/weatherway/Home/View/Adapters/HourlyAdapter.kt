@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamednader.weatherway.Model.Pojo.Hourly
+import com.mohamednader.weatherway.Utilities.Constants
 import com.mohamednader.weatherway.Utilities.getWeatherImageDrawable
 import com.mohamednader.weatherway.databinding.ItemHourlyBinding
 import java.text.SimpleDateFormat
@@ -27,7 +28,7 @@ class HourlyAdapter(private val context: Context) :
         val hourly : Hourly = getItem(position)
 
         val img = hourly.weather[0].icon
-        val temp = hourly.temp.toFloat().roundToInt().toString()
+        val temp = "${hourly.temp.toFloat().roundToInt()}${Constants.tempUnitForAll}"
         val dateFormat = SimpleDateFormat("hh:mm aa", Locale.getDefault())
         val date = Date(hourly.dt.toLong() * 1000)
 

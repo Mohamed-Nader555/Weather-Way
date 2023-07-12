@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mohamednader.weatherway.Model.Repo.RepositoryInterface
 import com.mohamednader.weatherway.Network.ApiState
+import com.mohamednader.weatherway.Utilities.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -19,6 +21,51 @@ class HomeViewModel(private val repo: RepositoryInterface) : ViewModel() {
         MutableStateFlow<ApiState>(ApiState.Loading)
     val weatherData : StateFlow<ApiState>
         get() = _weatherData
+
+    private var _language: MutableStateFlow<String> = MutableStateFlow<String>("")
+    val language: StateFlow<String>
+        get() = _language.asStateFlow()
+
+    private var _tempUnit: MutableStateFlow<String> = MutableStateFlow<String>("")
+    val tempUnit: StateFlow<String>
+        get() = _tempUnit.asStateFlow()
+
+    private var _windUnit: MutableStateFlow<String> = MutableStateFlow<String>("")
+    val windUnit: StateFlow<String>
+        get() = _windUnit.asStateFlow()
+
+
+    init {
+        getLanguageOption()
+        getTempUnitOption()
+        getWindUnitOption()
+    }
+
+    private fun getLanguageOption() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repo.getDataSP(Constants.language,"")
+            Log.i(TAG, "language: $result")
+            _language.emit(result)
+        }
+    }
+
+
+    private fun getTempUnitOption() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repo.getDataSP(Constants.tempUnit, Constants.tempUnit_celsius)
+            Log.i(TAG, "_tempUnit: $result")
+            _tempUnit.value = result
+        }
+    }
+
+
+    private fun getWindUnitOption() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repo.getDataSP(Constants.windUnit, Constants.windUnit_meter_per_second)
+            Log.i(TAG, "_windUnit: $result")
+            _windUnit.value = result
+        }
+    }
 
 
     fun getWeatherDataFromNetwork(params : MutableMap<String, String>){

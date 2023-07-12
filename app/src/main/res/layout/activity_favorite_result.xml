@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/background_color">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/background_color"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/weather_location_pin"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/mid_margin"
+                android:layout_marginTop="@dimen/mid_margin"
+                android:src="@drawable/location_pin"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/weather_temps_download"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/mid_margin"
+                android:layout_marginEnd="@dimen/mid_margin"
+                android:src="@drawable/cloud_download"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/weather_address_container"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_32sdp"
+                android:layout_below="@id/weather_location_pin"
+                android:layout_marginStart="@dimen/tiny_margin"
+                android:layout_marginTop="@dimen/mid_margin"
+                android:layout_marginEnd="@dimen/tiny_margin"
+                android:backgroundTint="@color/main_color"
+                android:elevation="@dimen/big_margin"
+                app:cardCornerRadius="@dimen/big_margin"
+                app:cardElevation="@dimen/tiny_margin"
+                app:layout_constraintEnd_toStartOf="@id/weather_temps_download"
+                app:layout_constraintStart_toEndOf="@id/weather_location_pin"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <TextView
+                    android:id="@+id/weather_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:maxLines="2"
+                    android:text="Unknown"
+                    android:textColor="@color/whitey"
+                    android:textSize="@dimen/small_text"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/location_permission_hint_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/big_margin"
+                android:layout_marginTop="@dimen/big_margin"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:elevation="@dimen/big_margin"
+                android:padding="@dimen/small_margin"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/big_margin"
+                app:cardElevation="@dimen/tiny_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/weather_address_container">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/main_color">
+
+                    <TextView
+                        android:id="@+id/location_permission_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="@dimen/tiny_margin"
+                        android:layout_marginTop="@dimen/tiny_margin"
+                        android:layout_marginEnd="@dimen/tiny_margin"
+                        android:text="@string/location_permission_hint"
+                        android:textColor="@color/whitey"
+                        android:textSize="@dimen/mid_text"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/location_permission_instruction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/location_permission_hint"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="@dimen/small_margin"
+                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginEnd="@dimen/small_margin"
+                        android:layout_marginBottom="@dimen/small_margin"
+                        android:gravity="center"
+                        android:text="@string/location_permission_instruction"
+                        android:textColor="@color/whitey"
+                        android:textSize="@dimen/small_text" />
+
+                    <Button
+                        android:id="@+id/location_permission_request_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/location_permission_instruction"
+                        android:layout_centerHorizontal="true"
+                        android:backgroundTint="?attr/background_color"
+                        android:text="Allow"
+                        android:textColor="@color/main_color" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/weather_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:gravity="center"
+                android:text="Sun,10 June"
+                android:textAllCaps="false"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/_17sdp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/weather_address_container"
+                app:layout_constraintStart_toStartOf="@id/weather_address_container"
+                app:layout_constraintTop_toBottomOf="@id/weather_address_container" />
+
+            <ImageView
+                android:id="@+id/weather_image"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="@dimen/_130sdp"
+                android:layout_below="@id/weather_address_container"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/tiny_margin"
+                android:layout_marginBottom="@dimen/tiny_margin"
+                app:layout_constraintEnd_toEndOf="@id/weather_date"
+                app:layout_constraintStart_toStartOf="@id/weather_date"
+                app:layout_constraintTop_toBottomOf="@id/weather_date" />
+
+            <TextView
+                android:id="@+id/weather_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Description"
+                android:textAllCaps="true"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/_17sdp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/weather_image"
+                app:layout_constraintStart_toStartOf="@id/weather_image"
+                app:layout_constraintTop_toBottomOf="@id/weather_image" />
+
+            <RelativeLayout
+                android:id="@+id/temp_degree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@id/weather_des"
+                app:layout_constraintStart_toStartOf="@id/weather_des"
+                app:layout_constraintTop_toBottomOf="@id/weather_des">
+
+                <TextView
+                    android:id="@+id/weather_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="30"
+                    android:textColor="@color/main_color"
+                    android:textSize="@dimen/_50sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/weather_deg_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/weather_temp"
+                    android:gravity="center"
+                    android:text="°"
+                    android:textColor="@color/main_color"
+                    android:textSize="@dimen/_40sdp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/weather_three_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@id/temp_degree"
+                app:layout_constraintStart_toStartOf="@id/temp_degree"
+                app:layout_constraintTop_toBottomOf="@id/temp_degree">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/small_icons"
+                        android:layout_height="@dimen/small_icons"
+                        android:layout_gravity="center"
+                        android:src="@drawable/humidity_small" />
+
+                    <TextView
+                        android:id="@+id/weather_humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/small_item_drawable_padding"
+                        android:text=""
+                        android:textColor="@color/main_color"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/small_icons"
+                        android:layout_height="@dimen/small_icons"
+                        android:layout_gravity="center"
+                        android:src="@drawable/wind_small" />
+
+                    <TextView
+                        android:id="@+id/weather_wind_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:padding="@dimen/small_item_drawable_padding"
+                        android:text=""
+                        android:textColor="@color/main_color"
+                        android:textSize="@dimen/small_text"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/small_icons"
+                        android:layout_height="@dimen/small_icons"
+                        android:layout_gravity="center"
+                        android:src="@drawable/clouds_small" />
+
+                    <TextView
+                        android:id="@+id/weather_clouds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/small_item_drawable_padding"
+                        android:text=""
+                        android:textColor="@color/main_color"
+                        android:textSize="@dimen/small_text"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/weather_hourly_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/tiny_margin"
+                android:layout_marginBottom="@dimen/tiny_margin"
+                android:gravity="center"
+                android:text="Today's Weather"
+                android:textAllCaps="true"
+                android:textColor="@color/main_color"
+                android:textSize="@dimen/_14sdp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/weather_three_details"
+                app:layout_constraintStart_toStartOf="@id/weather_three_details"
+                app:layout_constraintTop_toBottomOf="@id/weather_three_details" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/hourly_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/weather_hourly_title" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/daily_hint_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_180sdp"
+                android:layout_marginStart="@dimen/big_margin"
+                android:layout_marginTop="@dimen/big_margin"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:elevation="@dimen/big_margin"
+                app:cardCornerRadius="@dimen/big_margin"
+                app:cardElevation="@dimen/tiny_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hourly_recycler_view">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/main_color">
+
+
+                    <ImageView
+                        android:id="@+id/hint_image"
+                        android:layout_width="@dimen/_65sdp"
+                        android:layout_height="@dimen/_65sdp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/small_margin"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/star" />
+
+
+                    <TextView
+                        android:id="@+id/hint_main_lable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/hint_image"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/tiny_margin"
+                        android:layout_marginTop="@dimen/tiny_margin"
+                        android:layout_marginEnd="@dimen/tiny_margin"
+                        android:text="@string/this_week_weather"
+                        android:textColor="@color/whitey"
+                        android:textSize="@dimen/_19sdp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/hourly_weather_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/hint_main_lable"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="@dimen/small_margin"
+                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginEnd="@dimen/small_margin"
+                        android:layout_marginBottom="@dimen/small_margin"
+                        android:gravity="center"
+                        android:text="@string/this_weather_week_hint"
+                        android:textColor="@color/whitey"
+                        android:textSize="@dimen/small_text" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <RelativeLayout
+                android:id="@+id/daily_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/big_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/daily_hint_card_view">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/daily_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/daily_container" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

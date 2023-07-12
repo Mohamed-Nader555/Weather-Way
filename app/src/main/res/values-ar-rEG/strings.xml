@@ -1,20 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Weather Way</string>
     <string name="degree_symbol">°</string>
     <string name="percentage_symbol">%</string>
-    <string name="this_week_weather">This is the Week Weather</string>
+    <string name="this_week_weather">طقس هذا الاسبوع</string>
     <string name="this_weather_week_hint">You Can Press on any day to see all Weather Conditions</string>
     <string name="location_permission_hint">We cannot find your Location!</string>
     <string name="location_permission_instruction">Please allow Weather Way to access your Location</string>
     <string name="loading_dialog_text">Loading..</string>
 
-    <string name="gps_text">GPS</string>
-    <string name="map_text">Map</string>
+    <string name="gps_text">نظام تحديد المواقع</string>
+    <string name="map_text">خرائط</string>
 
     <string name="google_maps_api_key">AIzaSyBsyMaEywQWgvDBXQSL3LB7Oi9t5WMwmik</string>
 
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

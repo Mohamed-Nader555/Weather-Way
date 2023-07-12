@@ -17,27 +17,39 @@ class ConfigSetupViewModel(private val repo: RepositoryInterface) : ViewModel() 
     private val TAG = "ConfigSetupViewModel_INFO_TAG"
 
     fun saveFirstTime(){
-        repo.saveFirstTimeSP(false)
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.saveFirstTimeSP(false)
+        }
     }
 
     fun saveLocationAccessOption(access: String){
-        repo.saveDataSP(Constants.location, access)
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.saveDataSP(Constants.location, access)
+        }
     }
 
     fun saveNotificationOption(option: String){
-        repo.saveDataSP(Constants.notification, option)
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.saveDataSP(Constants.notification, option)
+        }
     }
 
     fun saveLanguageOption(language: String){
-        repo.saveDataSP(Constants.language, language)
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.saveDataSP(Constants.language, language)
+        }
     }
 
     fun saveTempUnitOption(tempUnit: String){
-        repo.saveDataSP(Constants.tempUnit, tempUnit)
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.saveDataSP(Constants.tempUnit, tempUnit)
+        }
     }
 
     fun saveWindUnitOption(windUnit: String){
-        repo.saveDataSP(Constants.windUnit, windUnit)
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.saveDataSP(Constants.windUnit, windUnit)
+        }
     }
 
 }

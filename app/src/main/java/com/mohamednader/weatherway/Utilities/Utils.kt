@@ -17,3 +17,14 @@ fun getWeatherImageDrawable(imgName: String): Int {
     }
     return R.drawable.cloud
 }
+
+fun convertMeterPerSecToMilePerHour(mps: Double): Double {
+    val mph = mps * 2.23694
+    return mph
+}
+
+
+fun convertMilePerHourToMeterPerSec(mph: Double): Double {
+    val mps = mph * 0.44704
+    return mps
+}
