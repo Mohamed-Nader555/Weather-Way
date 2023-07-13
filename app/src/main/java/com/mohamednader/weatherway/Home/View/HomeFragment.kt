@@ -30,6 +30,8 @@ import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialogFragment
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModel
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModelFactory
 import com.mohamednader.weatherway.MainHome.View.FabClickListener
+import com.mohamednader.weatherway.Model.AlarmItem
+import com.mohamednader.weatherway.Model.Place
 import com.mohamednader.weatherway.Model.Pojo.Daily
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
@@ -39,6 +41,7 @@ import com.mohamednader.weatherway.Utilities.*
 import com.mohamednader.weatherway.databinding.FragmentHomeBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -393,22 +396,27 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun getAddressFromLocation(location: Location) {
-        val addresses: List<Address> = geocoder.getFromLocation(
-            location.latitude, location.longitude, 1
-        ) as List<Address>
+        try {
+            val addresses: List<Address> = geocoder.getFromLocation(
+                location.latitude, location.longitude, 1
+            ) as List<Address>
 
-        if (addresses.isNotEmpty()) {
-            val address = addresses[0]
-            val country = address.countryName
-            val adminArea = address.adminArea
-            locationAddress = "$country, $adminArea"
-            binding.weatherAddress.text = "$country, $adminArea"
-        } else {
-            Toast.makeText(requireContext(), "Unable to retrieve address.", Toast.LENGTH_SHORT)
-                .show()
+            if (addresses.isNotEmpty()) {
+                val address = addresses[0]
+                val country = address.countryName
+                val adminArea = address.adminArea
+                locationAddress = "$country, $adminArea"
+                binding.weatherAddress.text = "$country, $adminArea"
+                Constants.placeToAlarm = Place(1000, location.latitude.toString(), location.longitude.toString(), locationAddress)
+            } else {
+                Toast.makeText(requireContext(), "Unable to retrieve address.", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error retrieving address.", Toast.LENGTH_SHORT).show()
         }
-
     }
+
 
     //Show and Hide Views Functions
     private fun hideViewsLocationPermission() {

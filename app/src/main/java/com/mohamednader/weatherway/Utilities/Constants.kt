@@ -1,5 +1,7 @@
 package com.mohamednader.weatherway.Utilities
 
+import com.mohamednader.weatherway.Model.Place
+
 object Constants {
     //Shared Preferences Keys
     const val firstTime = "first_time"
@@ -33,6 +35,13 @@ object Constants {
     var tempUnitValueForAll = ""
     var windUnitValueForAll = ""
     var languageValueForAll = ""
+
+    //Alarm
+
+    const val alarmIdKey = "ALARM_ID"
+    const val notificationIdPrefix = "ALARM_NOTIFICATION_"
+
+    lateinit var placeToAlarm : Place
 
 
 }

@@ -2,6 +2,7 @@ package com.mohamednader.weatherway.Model.Repo
 
 import android.util.Log
 import com.mohamednader.weatherway.Database.LocalSource
+import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
 import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import com.mohamednader.weatherway.Network.RemoteSource
@@ -79,6 +80,18 @@ class Repository private constructor(
 
     override suspend fun deletePlace(place: Place) {
         localSource.deletePlace(place)
+    }
+
+    override fun getAlarmsFromDatabase(): Flow<List<AlarmItem>> {
+        return localSource.getAlarmsFromDatabase()
+    }
+
+    override suspend fun insertAlarm(alarm: AlarmItem) {
+        localSource.insertAlarm(alarm)
+    }
+
+    override suspend fun deleteAlarm(alarm: AlarmItem) {
+        localSource.deleteAlarm(alarm)
     }
 
 }

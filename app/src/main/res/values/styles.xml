@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <!-- Customize the style attributes as per your requirements -->
+        <item name="colorAccent">@color/main_color</item>
+        <item name="colorPrimary">@color/main_color</item>
+        <item name="colorPrimaryVariant">@color/whitey</item>
+        <item name="colorOnPrimary">@color/dark</item>
+         <!-- Add more style attributes as needed -->
+    </style>
+</resources>

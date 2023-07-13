@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fav_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/mid_margin"
+    android:backgroundTint="@color/main_color"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="@dimen/big_margin"
+    app:cardElevation="@dimen/tiny_margin">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/tiny_margin">
+
+
+        <TextView
+            android:id="@+id/alarm_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_7sdp"
+            android:text="Address"
+            android:textStyle="bold"
+            android:textColor="?attr/background_color"
+            android:textSize="@dimen/small_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/alarm_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mid_margin"
+            android:padding="@dimen/_7sdp"
+            android:text="20/20/20"
+            android:textColor="?attr/background_color"
+            android:textSize="@dimen/small_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alarm_address" />
+
+
+        <ImageView
+            android:id="@+id/delete_img_btn"
+            android:layout_width="@dimen/small_icons"
+            android:layout_height="@dimen/small_icons"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:src="@drawable/ic_baseline_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,6 +1,7 @@
 package com.mohamednader.weatherway.Database
 
 import android.content.Context
+import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
 import kotlinx.coroutines.flow.Flow
 
@@ -15,7 +16,7 @@ class ConcreteLocalSource(context: Context) : LocalSource {
 
 
     override fun getPlacesFromDatabase(): Flow<List<Place>> {
-        return  favoriteDAO.getAllPlaces()
+        return favoriteDAO.getAllPlaces()
     }
 
     override suspend fun insertPlace(place: Place) {
@@ -24,6 +25,18 @@ class ConcreteLocalSource(context: Context) : LocalSource {
 
     override suspend fun deletePlace(place: Place) {
         favoriteDAO.deletePlace(place)
+    }
+
+    override fun getAlarmsFromDatabase(): Flow<List<AlarmItem>> {
+        return favoriteDAO.getAllAlarms()
+    }
+
+    override suspend fun insertAlarm(alarm: AlarmItem) {
+        favoriteDAO.insertAlarm(alarm)
+    }
+
+    override suspend fun deleteAlarm(alarm: AlarmItem) {
+        favoriteDAO.deleteAlarm(alarm)
     }
 
 }

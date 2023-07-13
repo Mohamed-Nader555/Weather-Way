@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
 
-@Database(entities = arrayOf(Place::class), version = 1)
+@Database(entities = arrayOf(Place::class, AlarmItem::class), version = 2)
 abstract class WeatherDatabase : RoomDatabase() {
 
     private val TAG = "FavoriteDatabase_INFO_TAG"
