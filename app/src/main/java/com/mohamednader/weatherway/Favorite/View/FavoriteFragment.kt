@@ -26,6 +26,7 @@ import com.mohamednader.weatherway.Model.Place
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
+import com.mohamednader.weatherway.Utilities.CheckInternetConnection
 import com.mohamednader.weatherway.Utilities.Constants
 import com.mohamednader.weatherway.Utilities.MapResultListenerHolder
 import com.mohamednader.weatherway.databinding.FragmentFavoriteBinding
@@ -43,6 +44,7 @@ class FavoriteFragment : Fragment(), FabClickListener, MapResult, OnFavClickList
     //Needed Variables
     val LOCATION_PICK: Int = 11
     lateinit var favPlacesAdapter: FavoritePlacesAdapter
+    lateinit var cd: CheckInternetConnection
 
 
     override fun onCreateView(
@@ -54,6 +56,8 @@ class FavoriteFragment : Fragment(), FabClickListener, MapResult, OnFavClickList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        cd = CheckInternetConnection(requireContext())
 
         //ViewModel
         favoriteFactory = FavoriteFragmentViewModelFactory(
@@ -157,12 +161,17 @@ class FavoriteFragment : Fragment(), FabClickListener, MapResult, OnFavClickList
     }
 
     override fun onClickPlace(place: Place) {
-        val intent = Intent(requireContext(), FavoriteResultActivity::class.java)
-        intent.putExtra("place_data", place)
-        startActivity(intent)
+
+        if (!cd.isConnected()) {
+            Toast.makeText(requireContext(), "No internet please connect and try again!", Toast.LENGTH_SHORT).show()
+        } else {
+            val intent = Intent(requireContext(), FavoriteResultActivity::class.java)
+            intent.putExtra("place_data", place)
+            startActivity(intent)
+            Toast.makeText(requireContext(), "You Clicked ${place.address}", Toast.LENGTH_SHORT).show()
+        }
 
 
-        Toast.makeText(requireContext(), "You Cliked ${place.address}", Toast.LENGTH_SHORT).show()
     }
 
 

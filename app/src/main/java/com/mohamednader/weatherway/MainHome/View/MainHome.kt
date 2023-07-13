@@ -88,6 +88,7 @@ class MainHome : AppCompatActivity() {
                 .commit()
         }
         replaceFragment(HomeFragment())
+        binding.bottomNavigationView.selectedItemId = R.id.home_menu_item
 
         initViews()
 
