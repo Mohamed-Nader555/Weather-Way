@@ -50,7 +50,7 @@ class FakeRepository : RepositoryInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteAlarm(alarm: AlarmItem) {
+    override suspend fun deleteAlarm(alarmId : Int) {
         TODO("Not yet implemented")
     }
 

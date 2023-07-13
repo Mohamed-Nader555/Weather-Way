@@ -28,7 +28,7 @@ class FakeLocalSource(var places : MutableList<Place>? = mutableListOf()) : Loca
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteAlarm(alarm: AlarmItem) {
+    override suspend fun deleteAlarm(alarmId : Int) {
         TODO("Not yet implemented")
     }
 }
