@@ -38,8 +38,8 @@ class ConcreteLocalSource(context: Context) : LocalSource {
         favoriteDAO.insertAlarm(alarm)
     }
 
-    override suspend fun deleteAlarm(alarm: AlarmItem) {
-        favoriteDAO.deleteAlarm(alarm)
+    override suspend fun deleteAlarm(alarmId: Int) {
+        favoriteDAO.deleteAlarm(alarmId)
     }
 
     

@@ -90,8 +90,8 @@ class Repository constructor(
         localSource.insertAlarm(alarm)
     }
 
-    override suspend fun deleteAlarm(alarm: AlarmItem) {
-        localSource.deleteAlarm(alarm)
+    override suspend fun deleteAlarm(alarmId: Int) {
+        localSource.deleteAlarm(alarmId)
     }
 
 

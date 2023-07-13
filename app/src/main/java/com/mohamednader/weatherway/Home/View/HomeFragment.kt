@@ -641,7 +641,7 @@ class HomeFragment : Fragment(), OnDayClickListener, MapResult, FabClickListener
 //        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList)
 //            .build(requireContext())
 //        startActivityForResult(intent, 1100)
-//        Toast.makeText(requireContext(), "This is From HomeFragment", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Google Places is not Free :(", Toast.LENGTH_LONG).show()
     }
 
 

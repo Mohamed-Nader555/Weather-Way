@@ -70,13 +70,13 @@ class AlarmReceiver : BroadcastReceiver() {
 
          val dismissButton = dialogView.findViewById<Button>(R.id.dismissButton)
         dismissButton.setOnClickListener {
-            // Dismiss the dialog, stop the Ringtone, and cancel the notification
+
             alertDialog.dismiss()
             ringtone?.stop()
             if(notif == Constants.notification_enable){
                 notificationManagerCompat.cancel(Constants.notificationIdPrefix, alarmId)
             }
-            // Open the pending intent
+
             try {
                 pendingIntent.send()
             } catch (e: PendingIntent.CanceledException) {
@@ -84,7 +84,10 @@ class AlarmReceiver : BroadcastReceiver() {
             }
         }
 
-        // Set the dialog window type to allow it to show over other apps
+        val updateIntent = Intent("com.mohamednader.weatherway.ACTION_ALARM")
+        updateIntent.putExtra(Constants.alarmIdKey, alarmId)
+
+
         alertDialog.window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY)
         alertDialog.show()
     }

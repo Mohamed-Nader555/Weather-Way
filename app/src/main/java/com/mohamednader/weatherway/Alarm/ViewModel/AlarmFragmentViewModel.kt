@@ -39,9 +39,9 @@ class AlarmFragmentViewModel (private val repo: RepositoryInterface) : ViewModel
     }
 
 
-    fun deleteAlarmFromFav(alarm: AlarmItem) {
+    fun deleteAlarmFromFav(alarmId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteAlarm(alarm)
+            repo.deleteAlarm(alarmId)
             getAllAlarmsFromDatabase()
         }
     }

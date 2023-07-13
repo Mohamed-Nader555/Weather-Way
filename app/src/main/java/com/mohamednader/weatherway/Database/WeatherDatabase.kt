@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
 
-@Database(entities = arrayOf(Place::class, AlarmItem::class), version = 3)
+@Database(entities = arrayOf(Place::class, AlarmItem::class), version = 5)
 abstract class WeatherDatabase : RoomDatabase() {
 
     private val TAG = "FavoriteDatabase_INFO_TAG"

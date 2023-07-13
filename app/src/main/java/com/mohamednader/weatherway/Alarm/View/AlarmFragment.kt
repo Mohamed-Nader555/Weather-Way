@@ -3,8 +3,10 @@ package com.mohamednader.weatherway.Alarm.View
 import android.app.*
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -62,11 +64,23 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
 
     lateinit var notif: String
 
+    private val updateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val id = intent.getIntExtra(Constants.alarmIdKey, 0)
+            Log.i(TAG, "onReceive: FROM FRAGMENT $id")
+            alarmViewModel.deleteAlarmFromFav(id)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentAlarmBinding.inflate(inflater, container, false)
+
+        val intentFilter = IntentFilter("com.mohamednader.weatherway.ACTION_ALARM")
+        requireContext().registerReceiver(updateReceiver, intentFilter)
+
         return binding.root
     }
 
@@ -93,7 +107,7 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
             launch {
 
                 alarmViewModel.alarmsList.collect { alarms ->
-                    Log.i(TAG, "onCreate: ${alarms.size}")
+
                     if (alarms.isNotEmpty()) {
                         showViews()
                         alarmAdapter.submitList(alarms)
@@ -118,6 +132,11 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
 
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireContext().unregisterReceiver(updateReceiver)
     }
 
 
@@ -201,7 +220,6 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
         if (hasOverlayPermission(requireContext())) {
             setAlarm()
         } else {
-            // Request the overlay permission from the user
             val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
             intent.data = Uri.parse("package:${requireContext().packageName}")
             startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
@@ -276,7 +294,7 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
             .setMessage("Do you want to cancel this alarm")
             .setCancelable(false)
             .setPositiveButton("Yes, Cancel it") { dialog, _ ->
-                alarmViewModel.deleteAlarmFromFav(alarm)
+                alarmViewModel.deleteAlarmFromFav(alarm.id)
                 val intent = Intent(requireContext(), AlarmReceiver::class.java)
                 pendingIntent = PendingIntent.getBroadcast(requireContext(), alarm.id.toInt(), intent, 0)
                 alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager

@@ -26,8 +26,8 @@ interface FavoriteDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAlarm(alarm: AlarmItem) : Long
 
-    @Delete
-    suspend fun deleteAlarm(alarm: AlarmItem) : Int
+    @Query("DELETE FROM alarm WHERE id = :alarmId")
+    suspend fun deleteAlarm(alarmId: Int)
 
 
 

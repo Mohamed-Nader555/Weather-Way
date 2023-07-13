@@ -13,7 +13,7 @@ interface LocalSource {
 
     fun getAlarmsFromDatabase(): Flow<List<AlarmItem>>
     suspend fun insertAlarm(alarm: AlarmItem)
-    suspend fun deleteAlarm(alarm: AlarmItem)
+    suspend fun deleteAlarm(alarmId: Int)
 
 
 }
