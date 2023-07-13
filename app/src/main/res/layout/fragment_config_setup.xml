@@ -21,7 +21,7 @@
             android:layout_marginTop="@dimen/big_margin"
             android:layout_marginEnd="@dimen/big_margin"
             android:gravity="center"
-            android:text="Configrations Setup"
+            android:text="@string/configrations_setup"
             android:textColor="@color/main_color"
             android:textSize="@dimen/mid_text"
             android:textStyle="bold" />
@@ -41,7 +41,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/small_margin"
                 android:gravity="center"
-                android:text="Location: "
+                android:text="@string/location"
                 android:textAllCaps="true"
                 android:textColor="@color/main_color"
                 android:textSize="@dimen/small_text"
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/small_margin"
                     android:layout_weight="1"
-                    android:text="GPS" />
+                    android:text="@string/gps_text" />
 
                 <RadioButton
                     android:id="@+id/radio_map_btn"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/small_margin"
                     android:layout_weight="1"
-                    android:text="Map" />
+                    android:text="@string/map_text" />
             </RadioGroup>
 
 
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Notification: "
+                android:text="@string/notification"
                 android:textAllCaps="true"
                 android:textColor="@color/main_color"
                 android:textSize="@dimen/small_text"
@@ -112,7 +112,7 @@
             android:layout_below="@id/notifications_options_container"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/small_margin"
-            android:text="Save"
+            android:text="@string/save"
             android:textColor="@color/whitey" />
 
     </RelativeLayout>

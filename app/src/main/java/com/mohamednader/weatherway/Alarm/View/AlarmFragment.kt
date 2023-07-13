@@ -26,18 +26,15 @@ import com.mohamednader.weatherway.Alarm.AlarmComponents.AlarmReceiver
 import com.mohamednader.weatherway.Alarm.ViewModel.AlarmFragmentViewModel
 import com.mohamednader.weatherway.Alarm.ViewModel.AlarmFragmentViewModelFactory
 import com.mohamednader.weatherway.Database.ConcreteLocalSource
-import com.mohamednader.weatherway.Favorite.View.FavoritePlacesAdapter
-import com.mohamednader.weatherway.Favorite.ViewModel.FavoriteFragmentViewModel
-import com.mohamednader.weatherway.Favorite.ViewModel.FavoriteFragmentViewModelFactory
 import com.mohamednader.weatherway.MainHome.View.FabClickListener
 import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.R
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
-import com.mohamednader.weatherway.Utilities.AlarmViewModelHolder
 import com.mohamednader.weatherway.Utilities.Constants
 import com.mohamednader.weatherway.databinding.FragmentAlarmBinding
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -63,6 +60,8 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
     lateinit var alarmAdapter: AlarmAdapter
     lateinit var formattedDateTime : String
 
+    lateinit var notif: String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -87,19 +86,36 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
         )
         alarmViewModel =
             ViewModelProvider(this, alarmFactory).get(AlarmFragmentViewModel::class.java)
-        AlarmViewModelHolder.alarmViewModel = alarmViewModel
+
         recyclerViewConfig()
 
         lifecycleScope.launchWhenStarted {
-            alarmViewModel.alarmsList.collect { alarms ->
-                Log.i(TAG, "onCreate: ${alarms.size}")
-                if (alarms.isNotEmpty()) {
-                    showViews()
-                    alarmAdapter.submitList(alarms)
-                } else {
-                    hideViews()
+            launch {
+
+                alarmViewModel.alarmsList.collect { alarms ->
+                    Log.i(TAG, "onCreate: ${alarms.size}")
+                    if (alarms.isNotEmpty()) {
+                        showViews()
+                        alarmAdapter.submitList(alarms)
+                    } else {
+                        hideViews()
+                    }
                 }
             }
+
+            launch {
+                alarmViewModel.notification.collect { result ->
+                    when (result) {
+                        Constants.notification_enable -> {
+                            notif = result
+                        }
+                        Constants.notification_disable -> {
+                            notif = result
+                        }
+                    }
+                }
+            }
+
         }
 
     }
@@ -219,25 +235,23 @@ class AlarmFragment : Fragment(), FabClickListener, OnDateSetListener, OnTimeSet
     fun setAlarm() {
 
         alarmIdCounter++
+
+        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        intent.putExtra(Constants.alarmIdKey, alarmIdCounter)
+        intent.putExtra(Constants.notificationIdKey, notif)
+        pendingIntent = PendingIntent.getBroadcast(requireContext(), alarmIdCounter, intent, 0)
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
+        )
+        Toast.makeText(requireContext(), "Alarm Set success", Toast.LENGTH_SHORT).show()
         var address = ""
         try{
             address = Constants.placeToAlarm.address
         }catch(ex : java.lang.Exception){
             address = ""
         }
-        val alarmItem = AlarmItem(alarmIdCounter, address , formattedDateTime)
-
-
-        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(requireContext(), AlarmReceiver::class.java)
-        intent.putExtra(Constants.alarmIdKey, alarmItem)
-        pendingIntent = PendingIntent.getBroadcast(requireContext(), alarmIdCounter, intent, 0)
-        alarmManager.setExact(
-            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
-        )
-        Toast.makeText(requireContext(), "Alarm Set success", Toast.LENGTH_SHORT).show()
-
-        alarmViewModel.addAlarmToFav(alarmItem)
+        alarmViewModel.addAlarmToFav(AlarmItem(alarmIdCounter, address , formattedDateTime))
         saveAlarmIdCounter(alarmIdCounter)
 
     }

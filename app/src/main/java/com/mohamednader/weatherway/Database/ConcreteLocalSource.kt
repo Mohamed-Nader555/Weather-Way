@@ -3,6 +3,7 @@ package com.mohamednader.weatherway.Database
 import android.content.Context
 import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
+import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 
 class ConcreteLocalSource(context: Context) : LocalSource {
@@ -31,6 +32,8 @@ class ConcreteLocalSource(context: Context) : LocalSource {
         return favoriteDAO.getAllAlarms()
     }
 
+
+
     override suspend fun insertAlarm(alarm: AlarmItem) {
         favoriteDAO.insertAlarm(alarm)
     }
@@ -38,5 +41,7 @@ class ConcreteLocalSource(context: Context) : LocalSource {
     override suspend fun deleteAlarm(alarm: AlarmItem) {
         favoriteDAO.deleteAlarm(alarm)
     }
+
+    
 
 }

@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:maxLines="2"
-                    android:text="Unknown"
+                    android:text="@string/unknown"
                     android:textColor="@color/whitey"
                     android:textSize="@dimen/small_text"
                     android:textStyle="bold" />
@@ -125,7 +125,7 @@
                         android:layout_below="@id/location_permission_instruction"
                         android:layout_centerHorizontal="true"
                         android:backgroundTint="?attr/background_color"
-                        android:text="Allow"
+                        android:text="@string/allow"
                         android:textColor="@color/main_color" />
 
                 </RelativeLayout>
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
                 android:gravity="center"
-                android:text="Sun,10 June"
+                android:text=""
                 android:textAllCaps="false"
                 android:textColor="@color/main_color"
                 android:textSize="@dimen/_17sdp"
@@ -164,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Description"
+                android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/main_color"
                 android:textSize="@dimen/_17sdp"
@@ -187,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
-                    android:text="30"
+                    android:text=""
                     android:textColor="@color/main_color"
                     android:textSize="@dimen/_50sdp"
                     android:textStyle="bold" />
@@ -198,7 +198,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/weather_temp"
                     android:gravity="center"
-                    android:text="°"
+                    android:text="@string/degree_symbol"
                     android:textColor="@color/main_color"
                     android:textSize="@dimen/_40sdp"
                     android:textStyle="bold" />
@@ -292,7 +292,7 @@
                 android:layout_marginTop="@dimen/tiny_margin"
                 android:layout_marginBottom="@dimen/tiny_margin"
                 android:gravity="center"
-                android:text="Today's Weather"
+                android:text="@string/today_s_weather"
                 android:textAllCaps="true"
                 android:textColor="@color/main_color"
                 android:textSize="@dimen/_14sdp"

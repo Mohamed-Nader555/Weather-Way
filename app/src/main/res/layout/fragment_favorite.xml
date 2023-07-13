@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:maxLines="2"
-            android:text="Favorite"
+            android:text="@string/favorite"
             android:textColor="@color/whitey"
             android:textSize="@dimen/small_text"
             android:textStyle="bold" />
@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="There is No Fav Items!!"
+        android:text="@string/there_is_no_fav_items"
         android:textColor="@color/dark"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -27,7 +27,7 @@ class CustomProgress {
         }
     }
 
-    fun showDialog(context: Context, message: String, cancelable: Boolean) {
+    fun showDialog(context: Context, cancelable: Boolean) {
         dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.prograss_bar_dialog)
@@ -36,7 +36,7 @@ class CustomProgress {
             context.resources.getColor(R.color.dark), PorterDuff.Mode.SRC_IN
         )
         val progressText: TextView = dialog.findViewById<TextView>(R.id.progress_text)
-        progressText.text = "" + message
+        progressText.text = context.resources.getText(R.string.loading_dialog_text)
         progressText.visibility = View.VISIBLE
         progressBar.visibility = View.VISIBLE
         progressBar.isIndeterminate = true

@@ -181,7 +181,7 @@ class FavoriteResultActivity : AppCompatActivity(), OnDayClickListener {
                     is ApiState.Loading -> {
                         Log.i(TAG, "onCreate: Loading...")
 
-                            customProgress.showDialog(this@FavoriteResultActivity, "Loading..", false)
+                            customProgress.showDialog(this@FavoriteResultActivity,   false)
 
                     }
                     is ApiState.Failure -> {

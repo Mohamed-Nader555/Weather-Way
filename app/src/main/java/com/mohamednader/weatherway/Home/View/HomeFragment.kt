@@ -22,6 +22,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.mohamednader.weatherway.Database.ConcreteLocalSource
 import com.mohamednader.weatherway.Home.View.Adapters.DailyAdapter
 import com.mohamednader.weatherway.Home.View.Adapters.HourlyAdapter
@@ -30,9 +32,9 @@ import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialogFragment
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModel
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModelFactory
 import com.mohamednader.weatherway.MainHome.View.FabClickListener
-import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
 import com.mohamednader.weatherway.Model.Pojo.Daily
+import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.Network.ApiState
@@ -45,6 +47,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+
 
 class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
 
@@ -71,12 +74,16 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
     private lateinit var customProgress: CustomProgress
 
     //Needed Variables
-    lateinit var locationAddress: String
+    var locationAddress: String = ""
 
     //API Variables
     private lateinit var languageValue: String
     private lateinit var tempUnitValue: String
     private lateinit var windUnitValue: String
+
+
+    lateinit var weatherOffline: WeatherResponse
+    lateinit var cd: CheckInternetConnection
 
 
     override fun onCreateView(
@@ -105,6 +112,8 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
             )
         )
         homeViewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
+
+        cd = CheckInternetConnection(requireContext())
 
         //Progress Bar
         customProgress = CustomProgress.getInstance()
@@ -140,7 +149,10 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                 ), REQUEST_LOCATION_PERMISSION_ID
             )
         }
+
+
     }
+
 
     private fun getSharedPrefsData() {
 
@@ -177,11 +189,116 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                 }
             }
 
-            getLastLocation()
-            requestWeatherData()
+            try {
+                val sharedPreferences =
+                    requireContext().getSharedPreferences("WeatherData", Context.MODE_PRIVATE)
+                val serializedObject = sharedPreferences.getString("weatherData", null)
+                val gson = Gson()
+                val deserializedObject =
+                    gson.fromJson(serializedObject, WeatherResponse::class.java)
+                weatherOffline = deserializedObject
+            } catch (ex: java.lang.Exception) {
+                Log.i(TAG, "getSharedPrefsData: ")
+            }
+
+
+            if (!cd.isConnected()) {
+                fillDataFromDataBase()
+            } else {
+                getLastLocation()
+                requestWeatherData()
+            }
+
 
         }
 
+    }
+
+
+    private fun fillDataFromDataBase() {
+        Snackbar.make(requireView(), "No internet connection", Snackbar.LENGTH_LONG).show()
+        val img = weatherOffline.current.weather[0].icon
+        val des = weatherOffline.current.weather[0].description
+        val wind = weatherOffline.current.windSpeed.toDouble()
+        lateinit var tempUnit: String
+        lateinit var windUnitText: String
+        when (languageValue) {
+            Constants.language_arabic -> {
+                tempUnit = when (tempUnitValue) {
+                    Constants.standard -> "ك"
+                    Constants.metric -> "س"
+                    Constants.imperial -> "ف"
+                    else -> "س"
+                }
+            }
+            Constants.language_english -> {
+                tempUnit = when (tempUnitValue) {
+                    Constants.standard -> "k"
+                    Constants.metric -> "c"
+                    Constants.imperial -> "f"
+                    else -> "c"
+                }
+            }
+        }
+        //Log.i(TAG, "requestWeatherData-Alert: ${(weatherOffline.alerts?.get(0)?.tags?.get(0))?:"There is no alerts"}")
+
+        when (tempUnitValue) {
+            Constants.standard -> {
+                windUnitText = when (windUnitValue) {
+                    Constants.windUnit_meter_per_second -> "${wind.roundToInt()}m/s"
+                    Constants.windUnit_mile_per_hour -> "${
+                        convertMeterPerSecToMilePerHour(
+                            wind
+                        ).roundToInt()
+                    }m/h"
+                    else -> ""
+                }
+            }
+            Constants.metric -> {
+                windUnitText = when (windUnitValue) {
+                    Constants.windUnit_meter_per_second -> "${wind.roundToInt()}m/s"
+                    Constants.windUnit_mile_per_hour -> "${
+                        convertMeterPerSecToMilePerHour(
+                            wind
+                        ).roundToInt()
+                    }m/h"
+                    else -> ""
+                }
+            }
+            Constants.imperial -> {
+                windUnitText = when (windUnitValue) {
+                    Constants.windUnit_meter_per_second -> "${
+                        convertMilePerHourToMeterPerSec(
+                            wind
+                        ).roundToInt()
+                    }m/s"
+                    Constants.windUnit_mile_per_hour -> "${wind.roundToInt()}m/h"
+                    else -> ""
+                }
+            }
+        }
+        Constants.tempUnitForAll = tempUnit
+        Constants.tempUnitValueForAll = tempUnitValue
+        Constants.windUnitValueForAll = windUnitValue
+        val temp = "${weatherOffline.current.temp.toFloat().roundToInt()}$tempUnit"
+        val humidity = "${weatherOffline.current.humidity.toFloat().roundToInt()}%"
+        val windSpeed = windUnitText
+        val clouds = "${weatherOffline.current.clouds.toFloat().roundToInt()}%"
+        val hourlyList = weatherOffline.hourly
+        val dailyList = weatherOffline.daily
+
+        val dateFormat = SimpleDateFormat("EEE,dd MMM", Locale.getDefault())
+        val date = Date(weatherOffline.current.dt.toLong() * 1000)
+
+        binding.weatherImage.setImageResource(getWeatherImageDrawable(img))
+        binding.weatherDes.text = des
+        binding.weatherTemp.text = temp
+        binding.weatherHumidity.text = humidity
+        binding.weatherWindSpeed.text = windSpeed
+        binding.weatherClouds.text = clouds
+        binding.weatherDate.text = dateFormat.format(date)
+        hourlyAdapter.submitList(hourlyList.take(24))
+        dailyAdapter.submitList(dailyList)
     }
 
     private fun requestWeatherData() {
@@ -189,6 +306,17 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
             homeViewModel.weatherData.collect { result ->
                 when (result) {
                     is ApiState.Success -> {
+                        launch {
+                            val sharedPreferences = requireContext().getSharedPreferences(
+                                "WeatherData", Context.MODE_PRIVATE
+                            )
+                            val editor = sharedPreferences.edit()
+                            val gson = Gson()
+                            val serializedObject = gson.toJson(result.data)
+                            editor.putString("weatherData", serializedObject)
+                            editor.apply()
+                        }
+
                         val weather = result.data
                         val img = weather.current.weather[0].icon
                         val des = weather.current.weather[0].description
@@ -279,7 +407,7 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                     is ApiState.Loading -> {
                         Log.i(TAG, "onCreate: Loading...")
                         if (checkPermissions()) {
-                            customProgress.showDialog(requireContext(), "Loading..", false)
+                            customProgress.showDialog(requireContext(), false)
                         }
                     }
                     is ApiState.Failure -> {
@@ -377,7 +505,7 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
         if (requestCode == REQUEST_LOCATION_PERMISSION_ID) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "onRequestPermissionsResult: Permission granted")
-                customProgress.showDialog(requireContext(), "Loading..", false)
+                customProgress.showDialog(requireContext(), false)
                 showViewsLocationPermission()
                 getLastLocation()
             } else {
@@ -407,9 +535,15 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                 val adminArea = address.adminArea
                 locationAddress = "$country, $adminArea"
                 binding.weatherAddress.text = "$country, $adminArea"
-                Constants.placeToAlarm = Place(1000, location.latitude.toString(), location.longitude.toString(), locationAddress)
+                Constants.placeToAlarm = Place(
+                    1000,
+                    location.latitude.toString(),
+                    location.longitude.toString(),
+                    locationAddress
+                )
             } else {
-                Toast.makeText(requireContext(), "Unable to retrieve address.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Unable to retrieve address.", Toast.LENGTH_SHORT)
+                    .show()
             }
         } catch (e: IOException) {
             e.printStackTrace()

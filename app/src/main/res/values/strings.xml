@@ -14,7 +14,38 @@
     <string name="google_maps_api_key">AIzaSyBsyMaEywQWgvDBXQSL3LB7Oi9t5WMwmik</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="unknown">Unknown</string>
+    <string name="allow">Allow</string>
+    <string name="today_s_weather">Today\'s Weather</string>
+    <string name="alarm">Alarms</string>
+    <string name="there_is_no_alarm_items">There is No Alarm Items!!</string>
+    <string name="there_is_no_alrets">There is No Alrets</string>
+    <string name="weather_is_fine">Weather is fine, keep going you are safe</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="configrations_setup">Configrations Setup</string>
+    <string name="location">Location:</string>
+    <string name="notification">Notification:</string>
+    <string name="save">Save</string>
+    <string name="use_this_location">Use This Location ?</string>
+    <string name="change_location">Change Location</string>
+    <string name="submit_location">Submit Location</string>
+    <string name="favorite">Favorite</string>
+    <string name="there_is_no_fav_items">There is No Fav Items!!</string>
+    <string name="settings">Settings</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="language">Language:</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="temp_unit">Temp Unit:</string>
+    <string name="celsius">celsius</string>
+    <string name="kelvin">kelvin</string>
+    <string name="fahrenheit">fahrenheit</string>
+    <string name="wind_unit">Wind Unit:</string>
+    <string name="meter_second">meter / second</string>
+    <string name="mile_hour">mile / hour</string>
+    <string name="home">Home</string>
+
+
 
 </resources>

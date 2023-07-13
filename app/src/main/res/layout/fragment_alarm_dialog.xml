@@ -38,7 +38,7 @@
                 android:layout_marginStart="@dimen/tiny_margin"
                 android:layout_marginTop="@dimen/tiny_margin"
                 android:layout_marginEnd="@dimen/tiny_margin"
-                android:text="There is No Alrets"
+                android:text="@string/there_is_no_alrets"
                 android:textColor="@color/whitey"
                 android:textSize="@dimen/_19sdp"
                 android:textStyle="bold" />
@@ -55,7 +55,7 @@
                 android:layout_marginEnd="@dimen/small_margin"
                 android:layout_marginBottom="@dimen/small_margin"
                 android:gravity="center"
-                android:text="Weather is fine, keep going you are safe "
+                android:text="@string/weather_is_fine"
                 android:textColor="@color/whitey"
                 android:textSize="@dimen/small_text" />
 
@@ -69,7 +69,7 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/button_shape_whity_color"
                 android:gravity="center"
-                android:text="Dismiss"
+                android:text="@string/dismiss"
                 android:textAllCaps="false"
                 android:textColor="@color/main_color"
                 android:textSize="20sp" />

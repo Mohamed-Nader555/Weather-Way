@@ -3,6 +3,7 @@ package com.mohamednader.weatherway.Database
 import androidx.room.*
 import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
+import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,6 +18,8 @@ interface FavoriteDao {
     suspend fun deletePlace(place: Place) : Int
 
 
+
+
     @Query("SELECT * FROM alarm")
     fun getAllAlarms() : Flow<List<AlarmItem>>
 
@@ -25,4 +28,9 @@ interface FavoriteDao {
 
     @Delete
     suspend fun deleteAlarm(alarm: AlarmItem) : Int
+
+
+
+
+
 }

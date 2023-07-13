@@ -39,6 +39,7 @@ object Constants {
     //Alarm
 
     const val alarmIdKey = "ALARM_ID"
+    const val notificationIdKey = "NOTIFICATION_ID"
     const val notificationIdPrefix = "ALARM_NOTIFICATION_"
 
     lateinit var placeToAlarm : Place

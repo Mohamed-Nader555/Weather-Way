@@ -1,19 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Weather Way</string>
+    <string name="google_maps_api_key">AIzaSyBsyMaEywQWgvDBXQSL3LB7Oi9t5WMwmik</string>
     <string name="degree_symbol">°</string>
     <string name="percentage_symbol">%</string>
-    <string name="this_week_weather">طقس هذا الاسبوع</string>
-    <string name="this_weather_week_hint">You Can Press on any day to see all Weather Conditions</string>
-    <string name="location_permission_hint">We cannot find your Location!</string>
-    <string name="location_permission_instruction">Please allow Weather Way to access your Location</string>
-    <string name="loading_dialog_text">Loading..</string>
-
+    <string name="this_week_weather">طقس الأسبوع الحالي</string>
     <string name="gps_text">نظام تحديد المواقع</string>
-    <string name="map_text">خرائط</string>
+    <string name="map_text">الخرائط</string>
+    <string name="this_weather_week_hint">يمكنك الضغط على أي يوم لعرض جميع حالات الطقس</string>
+    <string name="location_permission_hint">لا يمكننا العثور على موقعك!</string>
+    <string name="location_permission_instruction">يرجى السماح لـ Weather Way بالوصول إلى موقعك</string>
+    <string name="loading_dialog_text">جار التحميل...</string>
+    <string name="unknown">غير معروف</string>
+    <string name="allow">السماح</string>
+    <string name="today_s_weather">طقس اليوم</string>
+    <string name="alarm">المنبه</string>
+    <string name="location">الموقع:</string>
+    <string name="notification">الإشعار:</string>
+    <string name="save">حفظ</string>
+    <string name="change_location">تغيير الموقع</string>
+    <string name="there_is_no_alarm_items">لا توجد عناصر منبه!!</string>
+    <string name="there_is_no_alrets">لا توجد إنذارات</string>
+    <string name="weather_is_fine">الطقس جيد، استمر فأنت في أمان</string>
+    <string name="dismiss">رفض</string>
+    <string name="configrations_setup">إعدادات التكوين</string>
+    <string name="use_this_location">استخدام هذا الموقع؟</string>
+    <string name="submit_location">إرسال الموقع</string>
+    <string name="favorite">المفضلة</string>
+    <string name="there_is_no_fav_items">لا توجد عناصر مفضلة!!</string>
+    <string name="settings">الإعدادات</string>
+    <string name="enabled">مفعل</string>
+    <string name="disabled">معطل</string>
+    <string name="language">اللغة:</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="temp_unit">وحدة الحرارة:</string>
+    <string name="celsius">درجة مئوية</string>
+    <string name="kelvin">كيلفن</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="wind_unit">وحدة الرياح:</string>
+    <string name="meter_second">متر / ثانية</string>
+    <string name="mile_hour">ميل / ساعة</string>
+    <string name="home">لرئيسية</string>
 
-    <string name="google_maps_api_key">AIzaSyBsyMaEywQWgvDBXQSL3LB7Oi9t5WMwmik</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

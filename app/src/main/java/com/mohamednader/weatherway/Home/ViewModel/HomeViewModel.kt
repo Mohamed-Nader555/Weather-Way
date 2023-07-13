@@ -3,6 +3,8 @@ package com.mohamednader.weatherway.Home.ViewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mohamednader.weatherway.Model.Place
+import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import com.mohamednader.weatherway.Model.Repo.RepositoryInterface
 import com.mohamednader.weatherway.Network.ApiState
 import com.mohamednader.weatherway.Utilities.Constants
@@ -16,6 +18,13 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val repo: RepositoryInterface) : ViewModel() {
 
     private val TAG = "HomeViewModel_INFO_TAG"
+
+
+    private var _weatherDataOffline: MutableStateFlow<List<WeatherResponse>> =
+        MutableStateFlow<List<WeatherResponse>>(emptyList())
+    val weatherDataOffline: StateFlow<List<WeatherResponse>>
+        get() = _weatherDataOffline
+
 
     private var _weatherData: MutableStateFlow<ApiState> =
         MutableStateFlow<ApiState>(ApiState.Loading)
@@ -77,5 +86,4 @@ class HomeViewModel(private val repo: RepositoryInterface) : ViewModel() {
                 }
         }
     }
-
 }

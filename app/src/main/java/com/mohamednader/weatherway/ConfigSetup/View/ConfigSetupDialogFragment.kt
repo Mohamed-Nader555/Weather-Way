@@ -62,6 +62,7 @@ class ConfigSetupDialogFragment : DialogFragment() {
                         }
                         binding.radioMapBtn.id -> {
                             configViewModel.saveLocationAccessOption(Constants.location_map)
+                            TODO("MAKE USER CHOOSE HIS LOCATION FROM MAP")
                         }
                     }
                 }

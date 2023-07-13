@@ -67,6 +67,7 @@
 
         <receiver android:name=".Alarm.AlarmComponents.AlarmReceiver"
             android:enabled="true"
+            android:exported="true"
             />
 
     </application>

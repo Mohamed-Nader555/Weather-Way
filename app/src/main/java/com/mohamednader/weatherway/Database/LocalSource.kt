@@ -2,6 +2,7 @@ package com.mohamednader.weatherway.Database
 
 import com.mohamednader.weatherway.Model.AlarmItem
 import com.mohamednader.weatherway.Model.Place
+import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 
 interface LocalSource {
@@ -13,5 +14,6 @@ interface LocalSource {
     fun getAlarmsFromDatabase(): Flow<List<AlarmItem>>
     suspend fun insertAlarm(alarm: AlarmItem)
     suspend fun deleteAlarm(alarm: AlarmItem)
+
 
 }
