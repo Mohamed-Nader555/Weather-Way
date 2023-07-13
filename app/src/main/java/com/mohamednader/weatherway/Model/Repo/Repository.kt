@@ -9,7 +9,7 @@ import com.mohamednader.weatherway.Network.RemoteSource
 import com.mohamednader.weatherway.SharedPreferences.SharedPrefsSource
 import kotlinx.coroutines.flow.Flow
 
-class Repository private constructor(
+class Repository constructor(
     remoteSource: RemoteSource, localSource: LocalSource, sharedPrefsSource: SharedPrefsSource
 ) : RepositoryInterface {
 

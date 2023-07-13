@@ -45,4 +45,12 @@ object Constants {
     lateinit var placeToAlarm : Place
 
 
+    const val sourceFragment = "Source_Fragment"
+    const val homeFragment = "Home_Fragment"
+    const val favoriteFragment = "Favorite_Fragment"
+
+
+
+
+
 }

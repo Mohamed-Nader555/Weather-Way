@@ -43,8 +43,12 @@ class HomeViewModel(private val repo: RepositoryInterface) : ViewModel() {
     val windUnit: StateFlow<String>
         get() = _windUnit.asStateFlow()
 
+    private var _location: MutableStateFlow<String> = MutableStateFlow<String>("")
+    val location: StateFlow<String>
+        get() = _location.asStateFlow()
 
     init {
+        getLocationAccessOption()
         getLanguageOption()
         getTempUnitOption()
         getWindUnitOption()
@@ -57,6 +61,15 @@ class HomeViewModel(private val repo: RepositoryInterface) : ViewModel() {
             _language.emit(result)
         }
     }
+
+    private fun getLocationAccessOption() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repo.getDataSP(Constants.location, Constants.location_gps)
+            Log.i(TAG, "_location: $result")
+            _location.value = result
+        }
+    }
+
 
 
     private fun getTempUnitOption() {

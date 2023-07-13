@@ -32,7 +32,8 @@ import com.mohamednader.weatherway.Home.View.Dialogs.DailyResultDialogFragment
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModel
 import com.mohamednader.weatherway.Home.ViewModel.HomeViewModelFactory
 import com.mohamednader.weatherway.MainHome.View.FabClickListener
-import com.mohamednader.weatherway.Model.Place
+import com.mohamednader.weatherway.Maps.MapResult
+import com.mohamednader.weatherway.Maps.MapsActivity
 import com.mohamednader.weatherway.Model.Pojo.Daily
 import com.mohamednader.weatherway.Model.Pojo.WeatherResponse
 import com.mohamednader.weatherway.Model.Repo.Repository
@@ -49,7 +50,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 
-class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
+class HomeFragment : Fragment(), OnDayClickListener, MapResult, FabClickListener {
 
     private val TAG = "HomeFragment_INFO_TAG"
     private lateinit var binding: FragmentHomeBinding
@@ -78,13 +79,17 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
 
     //API Variables
     private lateinit var languageValue: String
+    private lateinit var locationValue: String
     private lateinit var tempUnitValue: String
     private lateinit var windUnitValue: String
+    private var searchLat: Double = 0.0
+    private var searchLong: Double = 0.0
+    private lateinit var searchAddress: String
 
 
     lateinit var weatherOffline: WeatherResponse
     lateinit var cd: CheckInternetConnection
-
+    val LOCATION_PICK: Int = 11
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -170,6 +175,16 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
             }
 
             launch {
+                homeViewModel.location.collect { result ->
+                    Log.i(TAG, "initViews: $result")
+                    when (result) {
+                        Constants.location_gps -> locationValue = result
+                        Constants.location_map -> locationValue = result
+                    }
+                }
+            }
+
+            launch {
                 homeViewModel.tempUnit.collect { result ->
                     when (result) {
                         Constants.tempUnit_celsius -> tempUnitValue = Constants.metric
@@ -189,24 +204,34 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                 }
             }
 
-            try {
-                val sharedPreferences =
-                    requireContext().getSharedPreferences("WeatherData", Context.MODE_PRIVATE)
-                val serializedObject = sharedPreferences.getString("weatherData", null)
-                val gson = Gson()
-                val deserializedObject =
-                    gson.fromJson(serializedObject, WeatherResponse::class.java)
-                weatherOffline = deserializedObject
-            } catch (ex: java.lang.Exception) {
-                Log.i(TAG, "getSharedPrefsData: ")
-            }
+            if (locationValue == Constants.location_map) {
+
+                MapResultListenerHolder.listener = this@HomeFragment as MapResult
+                val resMapView = Intent(requireContext(), MapsActivity::class.java)
+                resMapView.putExtra(Constants.sourceFragment, Constants.homeFragment)
+                startActivityForResult(
+                    resMapView, LOCATION_PICK
+                )
+            } else if (locationValue == Constants.location_gps) {
+                try {
+                    val sharedPreferences =
+                        requireContext().getSharedPreferences("WeatherData", Context.MODE_PRIVATE)
+                    val serializedObject = sharedPreferences.getString("weatherData", null)
+                    val gson = Gson()
+                    val deserializedObject =
+                        gson.fromJson(serializedObject, WeatherResponse::class.java)
+                    weatherOffline = deserializedObject
+                } catch (ex: java.lang.Exception) {
+                    Log.i(TAG, "getSharedPrefsData: ")
+                }
 
 
-            if (!cd.isConnected()) {
-                fillDataFromDataBase()
-            } else {
-                getLastLocation()
-                requestWeatherData()
+                if (!cd.isConnected()) {
+                    fillDataFromDataBase()
+                } else {
+                    getLastLocation()
+                    requestWeatherData()
+                }
             }
 
 
@@ -535,7 +560,7 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
                 val adminArea = address.adminArea
                 locationAddress = "$country, $adminArea"
                 binding.weatherAddress.text = "$country, $adminArea"
-                Constants.placeToAlarm = Place(
+                Constants.placeToAlarm = com.mohamednader.weatherway.Model.Place(
                     1000,
                     location.latitude.toString(),
                     location.longitude.toString(),
@@ -551,6 +576,35 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+//        if (requestCode == 1100 && resultCode == RESULT_OK) {
+//            val place: Place? = Autocomplete.getPlaceFromIntent(data!!)
+//            searchLat = place?.latLng?.latitude ?: 0.0
+//            searchLong = place?.latLng?.longitude ?: 0.0
+//            searchAddress = place?.name ?: ""
+//
+//            val params: MutableMap<String, String> = mutableMapOf(
+//                "lat" to searchLat.toString(),
+//                "lon" to searchLong.toString()
+//            )
+//            params += mapOf(
+//                "appid" to Constants.app_id,
+//                "units" to tempUnitValue,
+//                "lang" to languageValue,
+//                "exclude" to "minutely"
+//            )
+//
+//            homeViewModel.getWeatherDataFromNetwork(params)
+//            locationAddress = searchAddress
+//            binding.weatherAddress.text = searchAddress
+//
+//        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+//            val status: Status? = Autocomplete.getStatusFromIntent(data!!)
+//            Log.e("Failed", "onActivityResult: When Search ${status?.statusMessage}")
+//        }
+    }
 
     //Show and Hide Views Functions
     private fun hideViewsLocationPermission() {
@@ -578,7 +632,50 @@ class HomeFragment : Fragment(), OnDayClickListener, FabClickListener {
     }
 
     override fun onFabClick() {
-        Toast.makeText(requireContext(), "This is From HomeFragment", Toast.LENGTH_LONG).show()
+
+//        val fieldList: List<Place.Field> = listOf(
+//            Place.Field.ADDRESS,
+//            Place.Field.LAT_LNG,
+//            Place.Field.NAME
+//        )
+//        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList)
+//            .build(requireContext())
+//        startActivityForResult(intent, 1100)
+//        Toast.makeText(requireContext(), "This is From HomeFragment", Toast.LENGTH_LONG).show()
+    }
+
+
+    fun fillDataUsingLatLonAdd(
+        latitude: Double, longitude: Double, address: String
+    ) {
+
+        val params: MutableMap<String, String> = mutableMapOf(
+            "lat" to latitude.toString(), "lon" to longitude.toString()
+        )
+        params += mapOf(
+            "appid" to Constants.app_id,
+            "units" to tempUnitValue,
+            "lang" to languageValue,
+            "exclude" to "minutely"
+        )
+        homeViewModel.getWeatherDataFromNetwork(params)
+        locationAddress = address
+        binding.weatherAddress.text = address
+    }
+
+    override fun onMapResult(
+        latitude: Double, longitude: Double, address: String, sourceFragment: String
+    ) {
+
+        if (sourceFragment == Constants.homeFragment) {
+            if (!cd.isConnected()) {
+                fillDataFromDataBase()
+            } else {
+                fillDataUsingLatLonAdd(latitude, longitude, address)
+                requestWeatherData()
+            }
+        }
+
     }
 
 }

@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.mohamednader.weatherway.R
+import com.mohamednader.weatherway.Utilities.Constants
 import com.mohamednader.weatherway.Utilities.MapResultListenerHolder
 import com.mohamednader.weatherway.databinding.ActivityMapsBinding
 import java.io.IOException
@@ -40,6 +41,7 @@ class MapsActivity() : FragmentActivity(), OnMapReadyCallback, Serializable,
     var deviceLat = 0.0
     var deviceLon = 0.0
     var bundle = Bundle()
+    private lateinit var sourceFragment: String
 
 
 
@@ -49,6 +51,9 @@ class MapsActivity() : FragmentActivity(), OnMapReadyCallback, Serializable,
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        sourceFragment = intent.getStringExtra(Constants.sourceFragment).toString()
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         statusBarColor()
@@ -173,7 +178,7 @@ class MapsActivity() : FragmentActivity(), OnMapReadyCallback, Serializable,
         Log.i(TAG, "onFinishDialog: FROM MAPS ACTIVITY : $lat, $lon, $Address ")
 
 
-        MapResultListenerHolder.listener?.onMapResult(lat, lon, Address)
+        MapResultListenerHolder.listener?.onMapResult(lat, lon, Address, sourceFragment)
         finish()
 //        mapResultDialog.setArguments(bundle)
 //        mapResultDialog.show((this as FragmentActivity).supportFragmentManager, "MapResultDialog")

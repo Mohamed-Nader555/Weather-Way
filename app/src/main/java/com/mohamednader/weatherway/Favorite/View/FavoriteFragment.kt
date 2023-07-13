@@ -26,6 +26,7 @@ import com.mohamednader.weatherway.Model.Place
 import com.mohamednader.weatherway.Model.Repo.Repository
 import com.mohamednader.weatherway.Network.ApiClient
 import com.mohamednader.weatherway.SharedPreferences.ConcreteSharedPrefsSource
+import com.mohamednader.weatherway.Utilities.Constants
 import com.mohamednader.weatherway.Utilities.MapResultListenerHolder
 import com.mohamednader.weatherway.databinding.FragmentFavoriteBinding
 
@@ -104,6 +105,7 @@ class FavoriteFragment : Fragment(), FabClickListener, MapResult, OnFavClickList
         if (checkPermissions()) {
             MapResultListenerHolder.listener = this as MapResult
             val resMapView = Intent(requireContext(), MapsActivity::class.java)
+            resMapView.putExtra(Constants.sourceFragment,Constants.favoriteFragment)
             startActivityForResult(
                 resMapView, LOCATION_PICK
             )
@@ -128,28 +130,30 @@ class FavoriteFragment : Fragment(), FabClickListener, MapResult, OnFavClickList
 //        }
     }
 
-    override fun onMapResult(latitude: Double, longitude: Double, address: String) {
-        val place = Place(0, latitude.toString(), longitude.toString(), address)
-        if (latitude != null && longitude != null) {
-            favoriteViewModel.addPlaceToFav(place)
-            Toast.makeText(requireContext(), place.address + " Added From Fav!", Toast.LENGTH_SHORT)
-                .show()
-        }
-        Log.i(TAG, "onFinishDialog: IN FAVORITE ACTIVITY  : $latitude, $longitude, $address ")
+    override fun onMapResult(
+        latitude: Double, longitude: Double, address: String, sourceFragment: String
+    ) {
+        if (sourceFragment == Constants.favoriteFragment) {
+            val place = Place(0, latitude.toString(), longitude.toString(), address)
+            if (latitude != null && longitude != null) {
+                favoriteViewModel.addPlaceToFav(place)
+                Toast.makeText(
+                    requireContext(), place.address + " Added From Fav!", Toast.LENGTH_SHORT
+                ).show()
+            }
+            Log.i(TAG, "onFinishDialog: IN FAVORITE ACTIVITY  : $latitude, $longitude, $address ")
 
+        }
     }
 
     override fun onClickDeletePlace(place: Place) {
-        AlertDialog.Builder(requireContext())
-            .setMessage("Do you want to delete this place")
-            .setCancelable(false)
-            .setPositiveButton("Yes, Delete it") { dialog, _ ->
+        AlertDialog.Builder(requireContext()).setMessage("Do you want to delete this place")
+            .setCancelable(false).setPositiveButton("Yes, Delete it") { dialog, _ ->
                 favoriteViewModel.deletePlaceFromFav(place)
-                Toast.makeText(requireContext(), place.address + " Removed From Fav!", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            .setNegativeButton("No, Keep it", null)
-            .show()
+                Toast.makeText(
+                    requireContext(), place.address + " Removed From Fav!", Toast.LENGTH_SHORT
+                ).show()
+            }.setNegativeButton("No, Keep it", null).show()
     }
 
     override fun onClickPlace(place: Place) {
@@ -158,8 +162,7 @@ class FavoriteFragment : Fragment(), FabClickListener, MapResult, OnFavClickList
         startActivity(intent)
 
 
-        Toast.makeText(requireContext(), "You Cliked ${place.address}", Toast.LENGTH_SHORT)
-            .show()
+        Toast.makeText(requireContext(), "You Cliked ${place.address}", Toast.LENGTH_SHORT).show()
     }
 
 
